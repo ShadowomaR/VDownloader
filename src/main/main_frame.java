@@ -1,14 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package main;
 
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.URI;
+import java.util.*;
 import javax.swing.JFileChooser;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JSeparator;
 
 /**
  *
@@ -16,9 +17,16 @@ import javax.swing.JOptionPane;
  */
 public class main_frame extends javax.swing.JFrame {
 
-    //private String path="C:\\Users\\SHADOW\\Downloads\\Video\\dl";
-    private String folder_path="D:\\PROJET\\VDownloder\\src\\main\\paths.txt";
+    private final String folder_path="D:\\PROJET\\VDownloder\\src\\main\\paths.txt";
     private String path="D:\\PROJET\\VDownloder";
+    private final String[] command =
+	    {
+	        "cmd",
+	    };
+    private final PrintStream printStream;
+    private final int nb_thread=0;
+    private final int n=0;
+    
     /**
      * Creates new form main_frame
      */
@@ -26,6 +34,15 @@ public class main_frame extends javax.swing.JFrame {
         initComponents();
         notification.setEnabled(false);
         load_path(folder_path);
+        printStream = new PrintStream(new ops(notification));
+        System.setOut(printStream);
+        System.setErr(printStream);    
+        Map<String,Integer> hm = new HashMap<>();
+        hm.put("thread 1",1);
+        hm.put("thread 2",1);
+        hm.put("thread 3",1);
+        //JOptionPane.showMessageDialog(rootPane, hm.toString()+"\n size"+hm.size());
+        load_files();
     }
 
     /**
@@ -53,10 +70,6 @@ public class main_frame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         file = new javax.swing.JMenu();
         open = new javax.swing.JMenu();
-        folder = new javax.swing.JMenuItem();
-        curent_path = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        change_path = new javax.swing.JMenuItem();
         Exit = new javax.swing.JMenuItem();
         help = new javax.swing.JMenu();
 
@@ -144,24 +157,6 @@ public class main_frame extends javax.swing.JFrame {
         file.setText("File");
 
         open.setText("Open");
-
-        folder.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        folder.setText("Open folder");
-        open.add(folder);
-
-        curent_path.setText("Curent path");
-        open.add(curent_path);
-        open.add(jSeparator2);
-
-        change_path.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
-        change_path.setText("Change default path");
-        change_path.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                change_pathMousePressed(evt);
-            }
-        });
-        open.add(change_path);
-
         file.add(open);
 
         Exit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
@@ -204,10 +199,6 @@ public class main_frame extends javax.swing.JFrame {
         } 
         
     }//GEN-LAST:event_helpMousePressed
-
-    private void change_pathMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_change_pathMousePressed
-        change_path_option();
-    }//GEN-LAST:event_change_pathMousePressed
 
     private void ExitMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ExitMousePressed
         System.exit(0);
@@ -268,14 +259,11 @@ public class main_frame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Exit;
-    private javax.swing.JMenuItem change_path;
     private javax.swing.JButton check_btn;
-    private javax.swing.JMenuItem curent_path;
     private javax.swing.JButton download_btn;
     private javax.swing.JButton download_btn1;
     private javax.swing.JButton download_btn2;
     private javax.swing.JMenu file;
-    private javax.swing.JMenuItem folder;
     private javax.swing.JMenu help;
     private javax.swing.JTextField input;
     private javax.swing.JLabel jLabel1;
@@ -285,23 +273,18 @@ public class main_frame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTextArea notification;
     private javax.swing.JTextField number;
     private javax.swing.JMenu open;
     // End of variables declaration//GEN-END:variables
 
     private void get_vid(String text) {
-            
-            PrintStream printStream = new PrintStream(new ops(notification));
-            System.setOut(printStream);
-            System.setErr(printStream);
-		String[] command =
-	    {
-	        "cmd",
-	    };
-	    Process p;                        
-		try {
+        if (nb_thread<=3) {
+            Thread t=new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Process p;                        
+                    try {
 			p = Runtime.getRuntime().exec(command); 
 		        new Thread(new SyncPipe(p.getErrorStream(), System.err)).start();
 	                new Thread(new SyncPipe(p.getInputStream(), System.out)).start();
@@ -309,15 +292,17 @@ public class main_frame extends javax.swing.JFrame {
                         stdin.println("cd "+path);                        
 	                stdin.println(path+"\\youtube-dl "+text);            
 	                stdin.close();   
-	                //p.waitFor();
-	    	} catch (Exception e) {
+	                p.waitFor();                        
+                    } catch (Exception e) {
 	 		e.printStackTrace();
-		}
+                    }                    
+                }                
+            });
+            t.start();           
+        }
     }
 
-    private void load_path(String path) {
-        
-        curent_path.setText(path);
+    private void load_path(String path) {        
         File f=new File(path);        
         if (f.exists()) {
             try {
@@ -330,9 +315,7 @@ public class main_frame extends javax.swing.JFrame {
             } catch (Exception e) {
                 System.out.println("erruer :"+e.getLocalizedMessage());
             }
-        }else{
-            System.out.println("file does not exist");
-        }
+        }else JOptionPane.showMessageDialog(rootPane,"file does not exist");        
     }
 
     private void change_path_option() {  
@@ -352,16 +335,97 @@ public class main_frame extends javax.swing.JFrame {
                     fw.close();
                     path=r.getSelectedFile().getAbsolutePath();
                 } catch (Exception e) {
-                    System.out.println("erruer :"+e.getLocalizedMessage());
+                    JOptionPane.showMessageDialog(rootPane,"erruer :"+e.getLocalizedMessage());
                 }
             }
         }else{
             JOptionPane.showMessageDialog(rootPane, "The path is empty");
         }
+        load_files();
     }
 
     private boolean path_exist(String absolutePath) {
         return false;
+    }
+    
+    public static void endd() {
+         //System.out.println("cmd endd");
+         //JOptionPane.showMessageDialog(null, "rien");
+    }
+
+    private void load_files() {
+        open.removeAll();
+        File f=new File(path);
+        File[] files=f.listFiles();
+        
+        JMenuItem m = new JMenuItem("Open Folder");
+        m.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {}
+            @Override
+            public void mousePressed(MouseEvent e) {
+                try {
+                        java.awt.Desktop.getDesktop().open(f);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(rootPane, f.getName()+" Could not be opened");
+                    }
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
+        m.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));  
+        
+        open.add(m);        
+        
+        for (File file1 : files) {
+            m = new JMenuItem(file1.getName());            
+            m.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {}
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    try {
+                        java.awt.Desktop.getDesktop().open(file1);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(rootPane, file1.getName()+" Could not be opened");
+                    }
+                }
+                @Override
+                public void mouseReleased(MouseEvent e) {}
+                @Override
+                public void mouseEntered(MouseEvent e) {}
+                @Override
+                public void mouseExited(MouseEvent e) {}
+            });
+            if (file1.isDirectory()) {
+                m.setBackground(Color.YELLOW);
+                m.setForeground(new java.awt.Color(255,180,30));
+            } 
+            open.add(m);
+        }
+        
+        m = new JMenuItem("Change defult derectory");
+        m.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {}
+            @Override
+            public void mousePressed(MouseEvent e) {
+                change_path_option();
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
+        m.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
+        open.add(new JSeparator());
+        open.add(m);
     }
 
 }

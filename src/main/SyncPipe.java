@@ -16,10 +16,11 @@ public SyncPipe(InputStream istrm, OutputStream ostrm) {
           {
               ostrm_.write(buffer, 0, length);
           }
+          main_frame.endd();
       }
       catch (Exception e)
       {
-          e.printStackTrace();
+          //e.printStackTrace();
       }
   }
   private final OutputStream ostrm_;
