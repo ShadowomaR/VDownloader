@@ -2,6 +2,7 @@ package main;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import javax.swing.JOptionPane;
 class SyncPipe implements Runnable
 {
 public SyncPipe(InputStream istrm, OutputStream ostrm) {
@@ -9,18 +10,15 @@ public SyncPipe(InputStream istrm, OutputStream ostrm) {
       ostrm_ = ostrm;
   }
   public void run() {
-      try
-      {
+      try{
           final byte[] buffer = new byte[1024];
           for (int length = 0; (length = istrm_.read(buffer)) != -1; )
           {
               ostrm_.write(buffer, 0, length);
           }
           main_frame.endd();
-      }
-      catch (Exception e)
-      {
-          //e.printStackTrace();
+      }catch (Exception e){
+          JOptionPane.showMessageDialog(null, e.getMessage());
       }
   }
   private final OutputStream ostrm_;

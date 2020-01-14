@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.URI;
-import java.util.*;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -24,8 +23,6 @@ public class main_frame extends javax.swing.JFrame {
 	        "cmd",
 	    };
     private final PrintStream printStream;
-    private final int nb_thread=0;
-    private final int n=0;
     
     /**
      * Creates new form main_frame
@@ -33,16 +30,12 @@ public class main_frame extends javax.swing.JFrame {
     public main_frame() {
         initComponents();
         notification.setEnabled(false);
+        notification.setDisabledTextColor(Color.black);
         load_path(folder_path);
         printStream = new PrintStream(new ops(notification));
         System.setOut(printStream);
         System.setErr(printStream);    
-        Map<String,Integer> hm = new HashMap<>();
-        hm.put("thread 1",1);
-        hm.put("thread 2",1);
-        hm.put("thread 3",1);
-        //JOptionPane.showMessageDialog(rootPane, hm.toString()+"\n size"+hm.size());
-        load_files();
+        load_files();        
     }
 
     /**
@@ -86,7 +79,7 @@ public class main_frame extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(102, 0, 0));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        check_btn.setBackground(new java.awt.Color(0, 204, 153));
+        check_btn.setBackground(new java.awt.Color(15, 17, 132));
         check_btn.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         check_btn.setForeground(new java.awt.Color(255, 255, 255));
         check_btn.setText("Check");
@@ -95,21 +88,23 @@ public class main_frame extends javax.swing.JFrame {
                 check_btnActionPerformed(evt);
             }
         });
-        jPanel1.add(check_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 10, 88, 31));
-        jPanel1.add(input, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 10, 499, 31));
+        jPanel1.add(check_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 50, 88, 31));
+        jPanel1.add(input, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 670, 31));
 
         jLabel1.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Enter the Format number :");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 50, 170, 31));
+        jLabel1.setText("Choose the Format  :");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 120, 31));
 
+        notification.setBackground(new java.awt.Color(0, 0, 0));
         notification.setColumns(20);
+        notification.setForeground(new java.awt.Color(255, 255, 255));
         notification.setRows(5);
         jScrollPane1.setViewportView(notification);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 88, 700, 250));
 
-        download_btn.setBackground(new java.awt.Color(0, 204, 153));
+        download_btn.setBackground(new java.awt.Color(15, 17, 132));
         download_btn.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         download_btn.setForeground(new java.awt.Color(255, 255, 255));
         download_btn.setText("Get video");
@@ -118,15 +113,15 @@ public class main_frame extends javax.swing.JFrame {
                 download_btnActionPerformed(evt);
             }
         });
-        jPanel1.add(download_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 50, 88, 31));
-        jPanel1.add(number, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 50, 110, 30));
+        jPanel1.add(download_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 50, 88, 31));
+        jPanel1.add(number, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 50, 110, 30));
 
         jLabel3.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText(" Past you url her :");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, 109, 31));
+        jLabel3.setText("URL:");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 30, 31));
 
-        download_btn1.setBackground(new java.awt.Color(0, 204, 153));
+        download_btn1.setBackground(new java.awt.Color(15, 17, 132));
         download_btn1.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         download_btn1.setForeground(new java.awt.Color(255, 255, 255));
         download_btn1.setText("Get list");
@@ -135,9 +130,9 @@ public class main_frame extends javax.swing.JFrame {
                 download_btn1ActionPerformed(evt);
             }
         });
-        jPanel1.add(download_btn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 50, 88, 31));
+        jPanel1.add(download_btn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 50, 88, 31));
 
-        download_btn2.setBackground(new java.awt.Color(0, 204, 153));
+        download_btn2.setBackground(new java.awt.Color(15, 17, 132));
         download_btn2.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         download_btn2.setForeground(new java.awt.Color(255, 255, 255));
         download_btn2.setText("Get audio");
@@ -146,7 +141,7 @@ public class main_frame extends javax.swing.JFrame {
                 download_btn2ActionPerformed(evt);
             }
         });
-        jPanel1.add(download_btn2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 50, 88, 31));
+        jPanel1.add(download_btn2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 50, 88, 31));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 720, 350));
 
@@ -195,7 +190,7 @@ public class main_frame extends javax.swing.JFrame {
         try {
             java.awt.Desktop.getDesktop().browse(new URI("https://ytdl-org.github.io/youtube-dl/supportedsites.html"));
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            JOptionPane.showMessageDialog(rootPane, ex.getMessage());
         } 
         
     }//GEN-LAST:event_helpMousePressed
@@ -212,7 +207,7 @@ public class main_frame extends javax.swing.JFrame {
 
     private void download_btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_download_btn1ActionPerformed
         if (!input.getText().isEmpty()) {
-            get_vid("-a -c "+input.getText());
+            get_vid("-a "+input.getText());
         }
     }//GEN-LAST:event_download_btn1ActionPerformed
 
@@ -279,7 +274,6 @@ public class main_frame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void get_vid(String text) {
-        if (nb_thread<=3) {
             Thread t=new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -294,12 +288,11 @@ public class main_frame extends javax.swing.JFrame {
 	                stdin.close();   
 	                p.waitFor();                        
                     } catch (Exception e) {
-	 		e.printStackTrace();
+	 		JOptionPane.showMessageDialog(rootPane, e.getMessage());
                     }                    
                 }                
             });
-            t.start();           
-        }
+            t.start(); 
     }
 
     private void load_path(String path) {        
@@ -313,7 +306,7 @@ public class main_frame extends javax.swing.JFrame {
                 }
                 System.out.println(" .. ");
             } catch (Exception e) {
-                System.out.println("erruer :"+e.getLocalizedMessage());
+                System.out.println("Erruer :"+e.getLocalizedMessage());
             }
         }else JOptionPane.showMessageDialog(rootPane,"file does not exist");        
     }
@@ -335,7 +328,7 @@ public class main_frame extends javax.swing.JFrame {
                     fw.close();
                     path=r.getSelectedFile().getAbsolutePath();
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(rootPane,"erruer :"+e.getLocalizedMessage());
+                    JOptionPane.showMessageDialog(rootPane,"Erruer :"+e.getLocalizedMessage());
                 }
             }
         }else{
@@ -367,7 +360,7 @@ public class main_frame extends javax.swing.JFrame {
                 try {
                         java.awt.Desktop.getDesktop().open(f);
                     } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(rootPane, f.getName()+" Could not be opened");
+                        JOptionPane.showMessageDialog(rootPane, f.getName()+" Could not be opened :"+ex.getMessage());
                     }
             }
             @Override
@@ -403,7 +396,7 @@ public class main_frame extends javax.swing.JFrame {
             });
             if (file1.isDirectory()) {
                 m.setBackground(Color.YELLOW);
-                m.setForeground(new java.awt.Color(255,180,30));
+                m.setForeground(new java.awt.Color(230,140,0));
             } 
             open.add(m);
         }
