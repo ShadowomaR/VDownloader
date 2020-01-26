@@ -1,6 +1,8 @@
 package main;
 
 import java.awt.Color;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
@@ -9,6 +11,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 
 /**
  *
@@ -48,7 +51,8 @@ public class main_frame extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuItem1 = new javax.swing.JMenuItem();
-        jLabel2 = new javax.swing.JLabel();
+        past = new javax.swing.JPopupMenu();
+        Past = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         check_btn = new javax.swing.JButton();
         input = new javax.swing.JTextField();
@@ -68,7 +72,14 @@ public class main_frame extends javax.swing.JFrame {
 
         jMenuItem1.setText("jMenuItem1");
 
-        jLabel2.setText("jLabel2");
+        Past.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        Past.setText("Past");
+        Past.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PastActionPerformed(evt);
+            }
+        });
+        past.add(Past);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(153, 0, 0));
@@ -89,6 +100,13 @@ public class main_frame extends javax.swing.JFrame {
             }
         });
         jPanel1.add(check_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 50, 88, 31));
+
+        input.setComponentPopupMenu(past);
+        input.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                inputPropertyChange(evt);
+            }
+        });
         jPanel1.add(input, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 670, 31));
 
         jLabel1.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
@@ -217,6 +235,14 @@ public class main_frame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_download_btn2ActionPerformed
 
+    private void inputPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_inputPropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_inputPropertyChange
+
+    private void PastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PastActionPerformed
+        input.paste();
+    }//GEN-LAST:event_PastActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -254,6 +280,7 @@ public class main_frame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem Exit;
+    private javax.swing.JMenuItem Past;
     private javax.swing.JButton check_btn;
     private javax.swing.JButton download_btn;
     private javax.swing.JButton download_btn1;
@@ -262,7 +289,6 @@ public class main_frame extends javax.swing.JFrame {
     private javax.swing.JMenu help;
     private javax.swing.JTextField input;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
@@ -271,6 +297,7 @@ public class main_frame extends javax.swing.JFrame {
     private javax.swing.JTextArea notification;
     private javax.swing.JTextField number;
     private javax.swing.JMenu open;
+    private javax.swing.JPopupMenu past;
     // End of variables declaration//GEN-END:variables
 
     private void get_vid(String text) {
