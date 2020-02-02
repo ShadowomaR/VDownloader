@@ -7,11 +7,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -26,6 +28,7 @@ public class main_frame extends javax.swing.JFrame {
 	        "cmd",
 	    };
     private final PrintStream printStream;
+    PrintWriter stdin;
     
     /**
      * Creates new form main_frame
@@ -61,12 +64,12 @@ public class main_frame extends javax.swing.JFrame {
         notification = new javax.swing.JTextArea();
         download_btn = new javax.swing.JButton();
         number = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
-        download_btn1 = new javax.swing.JButton();
         download_btn2 = new javax.swing.JButton();
+        check_btn1 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         file = new javax.swing.JMenu();
         open = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
         Exit = new javax.swing.JMenuItem();
         help = new javax.swing.JMenu();
 
@@ -93,13 +96,13 @@ public class main_frame extends javax.swing.JFrame {
         check_btn.setBackground(new java.awt.Color(15, 17, 132));
         check_btn.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         check_btn.setForeground(new java.awt.Color(255, 255, 255));
-        check_btn.setText("Check");
+        check_btn.setText("List");
         check_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 check_btnActionPerformed(evt);
             }
         });
-        jPanel1.add(check_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 50, 88, 31));
+        jPanel1.add(check_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 50, 88, 31));
 
         input.setComponentPopupMenu(past);
         input.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -107,12 +110,12 @@ public class main_frame extends javax.swing.JFrame {
                 inputPropertyChange(evt);
             }
         });
-        jPanel1.add(input, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 670, 31));
+        jPanel1.add(input, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 700, 31));
 
         jLabel1.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Choose the Format  :");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 120, 31));
+        jLabel1.setText("Video Format  :");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 90, 31));
 
         notification.setBackground(new java.awt.Color(0, 0, 0));
         notification.setColumns(20);
@@ -125,41 +128,36 @@ public class main_frame extends javax.swing.JFrame {
         download_btn.setBackground(new java.awt.Color(15, 17, 132));
         download_btn.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         download_btn.setForeground(new java.awt.Color(255, 255, 255));
-        download_btn.setText("Get video");
+        download_btn.setText("video");
         download_btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 download_btnActionPerformed(evt);
             }
         });
-        jPanel1.add(download_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 50, 88, 31));
-        jPanel1.add(number, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 50, 110, 30));
-
-        jLabel3.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("URL:");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 30, 31));
-
-        download_btn1.setBackground(new java.awt.Color(15, 17, 132));
-        download_btn1.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
-        download_btn1.setForeground(new java.awt.Color(255, 255, 255));
-        download_btn1.setText("Get list");
-        download_btn1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                download_btn1ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(download_btn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 50, 88, 31));
+        jPanel1.add(download_btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 50, 88, 31));
+        jPanel1.add(number, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 50, 110, 30));
 
         download_btn2.setBackground(new java.awt.Color(15, 17, 132));
         download_btn2.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
         download_btn2.setForeground(new java.awt.Color(255, 255, 255));
-        download_btn2.setText("Get audio");
+        download_btn2.setText("Audio");
         download_btn2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 download_btn2ActionPerformed(evt);
             }
         });
-        jPanel1.add(download_btn2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 50, 88, 31));
+        jPanel1.add(download_btn2, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 50, 88, 31));
+
+        check_btn1.setBackground(new java.awt.Color(15, 17, 132));
+        check_btn1.setFont(new java.awt.Font("Trebuchet MS", 1, 12)); // NOI18N
+        check_btn1.setForeground(new java.awt.Color(255, 255, 255));
+        check_btn1.setText("Stop");
+        check_btn1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                check_btn1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(check_btn1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 50, 88, 31));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 720, 350));
 
@@ -171,6 +169,14 @@ public class main_frame extends javax.swing.JFrame {
 
         open.setText("Open");
         file.add(open);
+
+        jMenuItem3.setText("Version");
+        jMenuItem3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jMenuItem3MousePressed(evt);
+            }
+        });
+        file.add(jMenuItem3);
 
         Exit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         Exit.setText("Exit");
@@ -198,16 +204,13 @@ public class main_frame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void check_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_check_btnActionPerformed
-        
-        if (!input.getText().isEmpty()) {
-            get_vid("-F "+input.getText());
-        }
+        load_file();
     }//GEN-LAST:event_check_btnActionPerformed
 
     private void helpMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_helpMousePressed
         try {
             java.awt.Desktop.getDesktop().browse(new URI("https://ytdl-org.github.io/youtube-dl/supportedsites.html"));
-        } catch (Exception ex) {
+        } catch (IOException | URISyntaxException ex) {
             JOptionPane.showMessageDialog(rootPane, ex.getMessage());
         } 
         
@@ -220,14 +223,10 @@ public class main_frame extends javax.swing.JFrame {
     private void download_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_download_btnActionPerformed
         if (!input.getText().isEmpty() && !number.getText().isEmpty()) {
             get_vid("-f "+number.getText()+" -c "+input.getText());
-        }        
-    }//GEN-LAST:event_download_btnActionPerformed
-
-    private void download_btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_download_btn1ActionPerformed
-        if (!input.getText().isEmpty()) {
-            get_vid("-a "+input.getText());
+        }else if (!input.getText().isEmpty()) {
+            get_vid("-F "+input.getText());
         }
-    }//GEN-LAST:event_download_btn1ActionPerformed
+    }//GEN-LAST:event_download_btnActionPerformed
 
     private void download_btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_download_btn2ActionPerformed
         if (!input.getText().isEmpty()) {
@@ -242,6 +241,14 @@ public class main_frame extends javax.swing.JFrame {
     private void PastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PastActionPerformed
         input.paste();
     }//GEN-LAST:event_PastActionPerformed
+
+    private void jMenuItem3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem3MousePressed
+        get_vid("--version ");
+    }//GEN-LAST:event_jMenuItem3MousePressed
+
+    private void check_btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_check_btn1ActionPerformed
+        JOptionPane.showMessageDialog(rootPane, "Pas encore implementer");
+    }//GEN-LAST:event_check_btn1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -282,16 +289,16 @@ public class main_frame extends javax.swing.JFrame {
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenuItem Past;
     private javax.swing.JButton check_btn;
+    private javax.swing.JButton check_btn1;
     private javax.swing.JButton download_btn;
-    private javax.swing.JButton download_btn1;
     private javax.swing.JButton download_btn2;
     private javax.swing.JMenu file;
     private javax.swing.JMenu help;
     private javax.swing.JTextField input;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea notification;
@@ -301,24 +308,25 @@ public class main_frame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void get_vid(String text) {
-            Thread t=new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Process p;                        
-                    try {
-			p = Runtime.getRuntime().exec(command); 
-		        new Thread(new SyncPipe(p.getErrorStream(), System.err)).start();
-	                new Thread(new SyncPipe(p.getInputStream(), System.out)).start();
-	                PrintWriter stdin = new PrintWriter(p.getOutputStream());
-                        stdin.println("cd "+path);                        
-	                stdin.println(path+"\\youtube-dl "+text);            
-	                stdin.close();   
-	                p.waitFor();                        
-                    } catch (Exception e) {
-	 		JOptionPane.showMessageDialog(rootPane, e.getMessage());
-                    }                    
-                }                
-            });
+        notification.setText("");
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Process p;
+                try {
+                    p = Runtime.getRuntime().exec(command);
+                    new Thread(new SyncPipe(p.getErrorStream(), System.err)).start();
+                    new Thread(new SyncPipe(p.getInputStream(), System.out)).start();
+                    stdin = new PrintWriter(p.getOutputStream());
+                    stdin.println("cd "+path);
+                    stdin.println(path+"\\youtube-dl "+text);
+                    stdin.close();
+                    p.waitFor();
+                } catch (IOException | InterruptedException e) {
+                    JOptionPane.showMessageDialog(rootPane, e.getMessage());
+                }
+            }
+        });
             t.start(); 
     }
 
@@ -332,7 +340,7 @@ public class main_frame extends javax.swing.JFrame {
                     System.out.println(st);                    
                 }
                 System.out.println(" .. ");
-            } catch (Exception e) {
+            } catch (IOException e) {
                 System.out.println("Erruer :"+e.getLocalizedMessage());
             }
         }else JOptionPane.showMessageDialog(rootPane,"file does not exist");        
@@ -448,4 +456,22 @@ public class main_frame extends javax.swing.JFrame {
         open.add(m);
     }
 
+    /*
+    if (!input.getText().isEmpty()) {
+            get_vid("-a "+input.getText());
+        }
+    */
+
+    private void load_file() {
+        JFileChooser r=new JFileChooser();
+        r.setCurrentDirectory(r.getFileSystemView().getHomeDirectory());
+        r.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        r.addChoosableFileFilter(new FileNameExtensionFilter("Text", "txt"));
+        r.setAcceptAllFileFilterUsed(true);
+        int result = r.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            input.setText(r.getSelectedFile().getAbsolutePath());
+            get_vid("-a "+r.getSelectedFile().getAbsolutePath());
+        }
+    }
 }
