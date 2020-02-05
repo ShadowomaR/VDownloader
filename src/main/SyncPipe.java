@@ -1,5 +1,6 @@
 package main;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import javax.swing.JOptionPane;
@@ -9,6 +10,7 @@ public SyncPipe(InputStream istrm, OutputStream ostrm) {
       istrm_ = istrm;
       ostrm_ = ostrm;
   }
+@Override
   public void run() {
       try{
           final byte[] buffer = new byte[1024];
@@ -16,8 +18,7 @@ public SyncPipe(InputStream istrm, OutputStream ostrm) {
           {
               ostrm_.write(buffer, 0, length);
           }
-          main_frame.endd();
-      }catch (Exception e){
+      }catch (IOException e){
           JOptionPane.showMessageDialog(null, e.getMessage());
       }
   }

@@ -47,6 +47,11 @@
                 <Property name="text" type="java.lang.String" value="Open"/>
               </Properties>
             </Menu>
+            <Menu class="javax.swing.JMenu" name="historique">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Historique"/>
+              </Properties>
+            </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Version"/>
@@ -75,6 +80,11 @@
           <Events>
             <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="helpMousePressed"/>
           </Events>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="jMenu1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="?"/>
+          </Properties>
         </Menu>
       </SubComponents>
     </Menu>

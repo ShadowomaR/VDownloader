@@ -21,8 +21,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class main_frame extends javax.swing.JFrame {
 
-    private final String folder_path="D:\\PROJET\\VDownloder\\src\\main\\paths.txt";
     private String path="D:\\PROJET\\VDownloder";
+    private String historique_path=null;
     private final String[] command =
 	    {
 	        "cmd",
@@ -37,11 +37,11 @@ public class main_frame extends javax.swing.JFrame {
         initComponents();
         notification.setEnabled(false);
         notification.setDisabledTextColor(Color.black);
-        load_path(folder_path);
         printStream = new PrintStream(new ops(notification));
         System.setOut(printStream);
         System.setErr(printStream);    
-        load_files();        
+        load_files();
+        load_historique();
     }
 
     /**
@@ -69,9 +69,11 @@ public class main_frame extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         file = new javax.swing.JMenu();
         open = new javax.swing.JMenu();
+        historique = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         Exit = new javax.swing.JMenuItem();
         help = new javax.swing.JMenu();
+        jMenu1 = new javax.swing.JMenu();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -170,6 +172,9 @@ public class main_frame extends javax.swing.JFrame {
         open.setText("Open");
         file.add(open);
 
+        historique.setText("Historique");
+        file.add(historique);
+
         jMenuItem3.setText("Version");
         jMenuItem3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -197,6 +202,9 @@ public class main_frame extends javax.swing.JFrame {
         });
         jMenuBar1.add(help);
 
+        jMenu1.setText("?");
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         setSize(new java.awt.Dimension(715, 370));
@@ -222,15 +230,15 @@ public class main_frame extends javax.swing.JFrame {
 
     private void download_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_download_btnActionPerformed
         if (!input.getText().isEmpty() && !number.getText().isEmpty()) {
-            get_vid("-f "+number.getText()+" -c "+input.getText());
+            get_vid("-f "+number.getText()+" -c "+input.getText(),true);
         }else if (!input.getText().isEmpty()) {
-            get_vid("-F "+input.getText());
+            get_vid("-F "+input.getText(),false);
         }
     }//GEN-LAST:event_download_btnActionPerformed
 
     private void download_btn2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_download_btn2ActionPerformed
         if (!input.getText().isEmpty()) {
-            get_vid("-x --audio-format mp3 -c "+input.getText());
+            get_vid("-x --audio-format mp3 -c "+input.getText(),true);
         }
     }//GEN-LAST:event_download_btn2ActionPerformed
 
@@ -243,7 +251,7 @@ public class main_frame extends javax.swing.JFrame {
     }//GEN-LAST:event_PastActionPerformed
 
     private void jMenuItem3MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenuItem3MousePressed
-        get_vid("--version ");
+        get_vid("--version ", true);
     }//GEN-LAST:event_jMenuItem3MousePressed
 
     private void check_btn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_check_btn1ActionPerformed
@@ -266,15 +274,11 @@ public class main_frame extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(main_frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(main_frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(main_frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(main_frame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
@@ -294,8 +298,10 @@ public class main_frame extends javax.swing.JFrame {
     private javax.swing.JButton download_btn2;
     private javax.swing.JMenu file;
     private javax.swing.JMenu help;
+    private javax.swing.JMenu historique;
     private javax.swing.JTextField input;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
@@ -307,8 +313,9 @@ public class main_frame extends javax.swing.JFrame {
     private javax.swing.JPopupMenu past;
     // End of variables declaration//GEN-END:variables
 
-    private void get_vid(String text) {
+    private void get_vid(String text, boolean par1) {
         notification.setText("");
+        if(par1) save_historique(input.getText());
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -328,57 +335,6 @@ public class main_frame extends javax.swing.JFrame {
             }
         });
             t.start(); 
-    }
-
-    private void load_path(String path) {        
-        File f=new File(path);        
-        if (f.exists()) {
-            try {
-                BufferedReader fr=new BufferedReader(new FileReader(f));
-                String st;
-                while((st=fr.readLine())!=null){
-                    System.out.println(st);                    
-                }
-                System.out.println(" .. ");
-            } catch (IOException e) {
-                System.out.println("Erruer :"+e.getLocalizedMessage());
-            }
-        }else JOptionPane.showMessageDialog(rootPane,"file does not exist");        
-    }
-
-    private void change_path_option() {  
-        JFileChooser r=new JFileChooser();
-        r.setCurrentDirectory(new java.io.File("."));
-        r.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        r.showOpenDialog(null);
-        System.out.println(r.getSelectedFile().getAbsolutePath());
-        if (!r.getSelectedFile().getAbsolutePath().isEmpty()) {
-            if (path_exist(r.getSelectedFile().getAbsolutePath())) {
-                JOptionPane.showMessageDialog(rootPane, "This path Exist");
-            }else{
-                try {
-                    BufferedWriter fw=new BufferedWriter(new FileWriter(folder_path,true));
-                    fw.newLine();
-                    fw.write(r.getSelectedFile().getAbsolutePath());
-                    fw.close();
-                    path=r.getSelectedFile().getAbsolutePath();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(rootPane,"Erruer :"+e.getLocalizedMessage());
-                }
-            }
-        }else{
-            JOptionPane.showMessageDialog(rootPane, "The path is empty");
-        }
-        load_files();
-    }
-
-    private boolean path_exist(String absolutePath) {
-        return false;
-    }
-    
-    public static void endd() {
-         //System.out.println("cmd endd");
-         //JOptionPane.showMessageDialog(null, "rien");
     }
 
     private void load_files() {
@@ -442,7 +398,7 @@ public class main_frame extends javax.swing.JFrame {
             public void mouseClicked(MouseEvent e) {}
             @Override
             public void mousePressed(MouseEvent e) {
-                change_path_option();
+                //change_path_option();
             }
             @Override
             public void mouseReleased(MouseEvent e) {}
@@ -456,22 +412,82 @@ public class main_frame extends javax.swing.JFrame {
         open.add(m);
     }
 
-    /*
-    if (!input.getText().isEmpty()) {
-            get_vid("-a "+input.getText());
-        }
-    */
-
     private void load_file() {
-        JFileChooser r=new JFileChooser();
-        r.setCurrentDirectory(r.getFileSystemView().getHomeDirectory());
-        r.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        r.addChoosableFileFilter(new FileNameExtensionFilter("Text", "txt"));
-        r.setAcceptAllFileFilterUsed(true);
-        int result = r.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            input.setText(r.getSelectedFile().getAbsolutePath());
-            get_vid("-a "+r.getSelectedFile().getAbsolutePath());
+        if (!input.getText().isEmpty()) {
+            get_vid("-a "+input.getText(),true);
+        }else{
+            JFileChooser r=new JFileChooser();
+            r.setCurrentDirectory(r.getFileSystemView().getHomeDirectory());
+            r.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            r.addChoosableFileFilter(new FileNameExtensionFilter("Text", "txt"));
+            r.setAcceptAllFileFilterUsed(true);
+            int result = r.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                input.setText(r.getSelectedFile().getAbsolutePath());
+                get_vid("-a "+r.getSelectedFile().getAbsolutePath(),true);
+            }
+        }
+    }
+
+    private void load_historique() {
+        File f=new File(System.getProperty("user.home"),"Documents");
+        File f2=new File (f.getAbsoluteFile()+"/VDownloder");
+        File f3=new File (f.getAbsoluteFile()+"/VDownloder/temp.txt");
+        historique_path=f3.getAbsolutePath();
+        if(!f2.exists()){
+            f2.mkdirs();
+        }
+        if(!f3.exists()){
+            try {
+                f3.createNewFile();
+            } catch (IOException e) {
+                System.out.println("can't create file");
+            }
+        }
+        try {
+            BufferedReader fr=new BufferedReader(new FileReader(f3));
+            String st;
+            int i=0;
+            JMenuItem m;
+            while((st=fr.readLine())!=null && i<10){
+                if(st.length()>0){
+                    m = new JMenuItem(st);
+                    m.addMouseListener(new MouseListener() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {}
+                        @Override
+                        public void mousePressed(MouseEvent e) {
+                        }
+                        @Override
+                        public void mouseReleased(MouseEvent e) {}
+                        @Override
+                        public void mouseEntered(MouseEvent e) {}
+                        @Override
+                        public void mouseExited(MouseEvent e) {}
+                    });
+                    historique.add(m);
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(rootPane,"Erruer :"+e.getLocalizedMessage());
+        }
+    }
+
+    private void save_historique(String text) {
+        if(historique_path!=null){
+            File f3=new File (historique_path);
+            if(!f3.exists()){
+                load_historique();
+            }
+            try {
+                BufferedWriter fw=new BufferedWriter(new FileWriter(historique_path,true));
+                fw.newLine();
+                fw.write(text);
+                fw.close();
+                load_historique();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(rootPane,"Erruer :"+e.getLocalizedMessage());
+            }
         }
     }
 }
